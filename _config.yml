@@ -1,0 +1,16 @@
+remote_theme: vaibhavvikas/jekyll-theme-minimalistic
+color-scheme: light
+
+title: somerville-schools-traffic-safety
+description: some description
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jemoji
+
+navigation:
+  - name: Read me
+    link: ./index.html
+  - name: Jupyter notebook
+    link: ./duplicate-ssrs-analysis-viz
