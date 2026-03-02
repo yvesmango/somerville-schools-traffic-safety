@@ -2,7 +2,7 @@ remote_theme: vaibhavvikas/jekyll-theme-minimalistic
 color-scheme: light
 
 title: somerville-schools-traffic-safety
-description: some description
+description: Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis
 
 plugins:
   - jekyll-sitemap
