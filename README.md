@@ -23,20 +23,21 @@ This project combines spatial analysis and data visualization to assess school z
 
 ## Key Findings
   
-- **Winter Hill** and **East Somerville** schools are the top priorities due to high crash counts and traffic exposure.
-- **Healey School** has a high injury crash rate relative to its traffic, suggesting specific risks near I-93.
-- **Argenziano School** faces the highest total traffic volume from a dense street network.
+- *Winter Hill* and *East Somerville* schools are the top priorities due to high crash counts and traffic exposure.
+- *Healey School* has a high injury crash rate relative to its traffic, suggesting specific risks near I-93.
+- *Argenziano School* faces the highest total traffic volume from a dense street network.
 
 
 ## Outputs
 
 - [Final Priority Map](./outputs/somerville_school_priority_final.png)
+- [Crash vs. Traffic Combo Chart](./outputs/crashes_vs_avg_aadt.png)
 - [Interactive Priority Map](./outputs/somerville_school_priority_folium.html)
-- [Crash vs. Traffic Combo Chart](./outputs/crashes_vs_traffic_total_aadt.png)
+- [Executive Summary](./outputs/crashes_vs_avg_aadt.png)
 
 ## Technologies Used
 
-`Python`, `GeoPandas`, `Pandas`, `Matplotlib`, `Leafmap`, `Jupyter Notebooks`, `REST APIs`
+`Python`, `GeoPandas`, `Matplotlib`, `Leafmap`, `REST APIs`
 
 ## License
 
