@@ -2,6 +2,8 @@
 
 # Somerville Schools Traffic Analysis
 
+![ipyleaflet-traffic-buffers](https://github.com/user-attachments/assets/42a0a42b-7361-4dc8-be9b-063981046bf9)
+
 **Goal**: To identify and prioritize Somerville public schools for safety interventions by analyzing crash data and traffic volumes.
 
 ## Introduction
