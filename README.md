@@ -32,8 +32,8 @@ This project combines spatial analysis and data visualization to assess school z
 
 - [Final Priority Map](./outputs/somerville_school_priority_final.png)
 - [Crash vs. Traffic Combo Chart](./outputs/crashes_vs_avg_aadt.png)
-- [Interactive Priority Map](./outputs/somerville_school_priority_folium.html)
-- [Executive Summary](./outputs/crashes_vs_avg_aadt.png)
+- [Interactive Priority Map]()
+- [Executive Summary]()
 
 ## Technologies Used
 

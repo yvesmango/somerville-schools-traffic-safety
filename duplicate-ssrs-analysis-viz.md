@@ -22,6 +22,8 @@ import matplotlib.pyplot as plt
 import contextily as ctx
 import os
 import json
+import ipywidgets as widgets
+from ipyleaflet import Map, GeoJSON, GeoData, WidgetControl, basemaps
 
 
 # Paths
@@ -512,7 +514,7 @@ if 'Crash_Severity' in crashes_in_025.columns:
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_11_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_11_0.png)
     
 
 
@@ -913,7 +915,7 @@ traffic_in_025.head()
 ```python
 # Visual check - Crashes with 0.25 mile buffers
 
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(10, 8))
 
 # Plot Somerville boundary
 boundary.plot(ax=ax, alpha=0.2, color='lightgray', edgecolor='black', linewidth=1)
@@ -942,7 +944,7 @@ print(f"Crashes within buffers (spatial join result): {len(crashes_in_025)}")
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_18_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_18_0.png)
     
 
 
@@ -978,7 +980,7 @@ print(f"AADT range: {traffic['AADT'].min():,.0f} - {traffic['AADT'].max():,.0f}"
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_19_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_19_0.png)
     
 
 
@@ -1052,7 +1054,7 @@ print(f"Traffic segments intersecting this buffer (Winter Hill Community Innovat
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_21_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_21_0.png)
     
 
 
@@ -1425,7 +1427,7 @@ display(priority_final)
 # Cell 14: Merge priority scores with school geometries
 # Ensure both are in the same CRS
 schools_priority_ranks = schools.merge(
-    priority_final[['school_name', 'priority_score', 'crashes_025mi', 'total_aadt', 'crashes_per_10k_aadt', 'rank']],
+    priority_final[['school_name', 'priority_score', 'crashes_025mi', 'avg_aadt','total_aadt', 'crashes_per_10k_aadt', 'rank']],
     on='school_name',
     how='left'
 )
@@ -1485,6 +1487,7 @@ schools_priority_ranks.head()
       <th>geometry</th>
       <th>priority_score</th>
       <th>crashes_025mi</th>
+      <th>avg_aadt</th>
       <th>total_aadt</th>
       <th>crashes_per_10k_aadt</th>
       <th>rank</th>
@@ -1501,6 +1504,7 @@ schools_priority_ranks.head()
       <td>POINT (233292.393 904108.027)</td>
       <td>157.0</td>
       <td>74</td>
+      <td>5347.0</td>
       <td>876907</td>
       <td>0.84</td>
       <td>4</td>
@@ -1515,6 +1519,7 @@ schools_priority_ranks.head()
       <td>POINT (233309.399 905299.884)</td>
       <td>121.0</td>
       <td>58</td>
+      <td>5976.0</td>
       <td>549837</td>
       <td>1.05</td>
       <td>5</td>
@@ -1529,6 +1534,7 @@ schools_priority_ranks.head()
       <td>POINT (231780.132 905277.243)</td>
       <td>60.0</td>
       <td>27</td>
+      <td>3766.0</td>
       <td>583794</td>
       <td>0.46</td>
       <td>8</td>
@@ -1543,6 +1549,7 @@ schools_priority_ranks.head()
       <td>POINT (233978.089 904074.412)</td>
       <td>194.0</td>
       <td>91</td>
+      <td>6602.0</td>
       <td>1161980</td>
       <td>0.78</td>
       <td>2</td>
@@ -1557,6 +1564,7 @@ schools_priority_ranks.head()
       <td>POINT (233082.409 903236.028)</td>
       <td>175.0</td>
       <td>80</td>
+      <td>7409.0</td>
       <td>1503997</td>
       <td>0.53</td>
       <td>3</td>
@@ -1608,7 +1616,7 @@ plt.show()
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_28_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_28_0.png)
     
 
 
@@ -1657,14 +1665,14 @@ plt.show()
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_29_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_29_0.png)
     
 
 
 
 ```python
 # Cell 14.6: Add school points with rank labels - FINAL MAP
-fig, ax = plt.subplots(figsize=(14, 12))
+fig, ax = plt.subplots(figsize=(12, 10))
 
 # Plot Somerville boundary
 boundary.plot(ax=ax, color='#f0f0f0', edgecolor='black', linewidth=0.5, alpha=0.5)
@@ -1742,7 +1750,7 @@ plt.show()
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_30_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_30_0.png)
     
 
 
@@ -1982,14 +1990,14 @@ plt.figtext(
 )
 
 plt.tight_layout()
-#plt.savefig('../outputs/injury_rate_among_schools.png', dpi=300, bbox_inches='tight')
+plt.savefig('../outputs/injury_rate_among_schools.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 ```
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_33_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_33_0.png)
     
 
 
@@ -2115,13 +2123,13 @@ plt.figtext(
 )
 
 plt.tight_layout()
-#plt.savefig('../outputs/crashes_vs_traffic_total_aadt.png', dpi=300, bbox_inches='tight')
+plt.savefig('../outputs/crashes_vs_traffic_total_aadt.png', dpi=300, bbox_inches='tight')
 plt.show()
 ```
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_35_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_35_0.png)
     
 
 
@@ -2232,29 +2240,17 @@ plt.figtext(
 )
 
 plt.tight_layout()
-#plt.savefig('../outputs/crashes_vs_avg_aadt.png', dpi=300, bbox_inches='tight')
+plt.savefig('../outputs/crashes_vs_avg_aadt.png', dpi=300, bbox_inches='tight')
 plt.show()
 ```
 
 
     
-![png](duplicate-ssrs-analysis-viz_files/duplicate-ssrs-analysis-viz_36_0.png)
+![png](02_analysis_viz_files/02_analysis_viz_36_0.png)
     
 
 
-#### Interactive web map (work in progress)
-
-
-```python
-# Cell: Load .env from parent directory
-from dotenv import load_dotenv
-
-# Load the .env file
-load_dotenv()
-
-# Now try getting the key
-MAPTILER_KEY = os.getenv('MAPTILER_KEY')
-```
+#### Prep interactive web map 
 
 
 ```python
@@ -2335,7 +2331,7 @@ buffer_025
 
 
 ```python
-# Cell 16: Interactive map
+# Cell 16: Set pojections for web mapping
 
 # Ensure all data is in WGS84 (EPSG:4326) for web mapping
 # Leafmap/MapLibre expects geographic coordinates
@@ -2349,15 +2345,22 @@ schools_priority_ranks_wgs84 = schools_priority_ranks.to_crs('EPSG:4326').copy()
 
 # Prepare buffer data with priority scores
 buffers_025_priority_wgs84 = buffers_025_priority.merge(
-    schools_priority_ranks_wgs84[['school_name', 'rank', 'priority_score', 'crashes_025mi', 'total_aadt']],
+    schools_priority_ranks_wgs84[['school_name', 'rank', 'priority_score', 'crashes_025mi', 'avg_aadt', 'total_aadt']],
     on='school_name',
     how='left'
 )
+
+# Add formatted display columns BEFORE converting to GeoJSON
+buffers_025_priority_wgs84['display_rank'] = 'Rank: #' + buffers_025_priority_wgs84['rank'].astype(str)
+buffers_025_priority_wgs84['display_crashes'] = 'Crashes: ' + buffers_025_priority_wgs84['crashes_025mi'].astype(str)
+buffers_025_priority_wgs84['display_score'] = 'Priority Score: ' + buffers_025_priority_wgs84['priority_score'].round(0).astype(str)
+buffers_025_priority_wgs84['display_traffic'] = 'Traffic: ' + (buffers_025_priority_wgs84['total_aadt']/1000).round(0).astype(str) + 'k AADT'
 
 print("✅ Data prepared for interactive map")
 print(f"Buffers: {len(buffers_025_priority_wgs84)}")
 print(f"Schools: {len(schools_priority_ranks_wgs84)}")
 print(f"Crashes: {len(total_crashes_wgs84)}")
+display(buffers_025_priority_wgs84.head())
 ```
 
     ✅ Data prepared for interactive map
@@ -2367,149 +2370,381 @@ print(f"Crashes: {len(total_crashes_wgs84)}")
 
 
 
-```python
-buffers_025_priority_wgs84.columns
-```
-
-
-
-
-    Index(['school_name', 'geometry', 'rank', 'priority_score', 'crashes_025mi',
-           'total_aadt'],
-          dtype='object')
-
-
-
-
-```python
-#import leafmap.foliumap as leafmap
-```
-
-
-```python
-c45q5
-```
-
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    Cell In[40], line 1
-    ----> 1 c45q5
-
-
-    NameError: name 'c45q5' is not defined
-
-
-
-```python
-# Cell 16.2: Correct implementation using leafmap.maplibregl
-
-# Create map (style works fine here - it's a string for basemap)
-m = leafmap.Map(
-    center=[42.3875, -71.0995],
-    zoom=13,
-    style=f"https://api.maptiler.com/maps/dataviz-v4/style.json?key={MAPTILER_KEY}"
-)
-
-# Add Somerville boundary (using paint for fill/stroke)
-m.add_gdf(
-    boundary_wgs84,
-    layer_type="line",  # Specify geometry type
-    name="Somerville Boundary",
-    paint={
-        "line-color": "#A37121",
-        "line-width": 2,
-        "line-opacity": 0.5
-    }
-)
-
-
-# Add crash points
-m.add_gdf(
-    total_crashes_wgs84,
-    layer_type="circle",  # Points use circle type
-    name="Crashes (2023-2025)",
-    paint={
-        "circle-radius": 1.8,
-        "circle-color": "#000000",
-        "circle-opacity": 0.5
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
-)
-
-
-# Get min/max for color scaling
-min_score = buffers_025_priority['priority_score'].min()
-max_score = buffers_025_priority['priority_score'].max()
-
-# Simpler version with uniform color
-buffers_geojson = buffers_025_priority.__geo_interface__
-# Add the buffers as a fill layer with gradient
-m.add_geojson(
-    buffers_geojson,
-    name="School Priority Buffers",
-    layer_type="fill",
-    paint={
-        "fill-color": [
-            "interpolate",
-            ["linear"],
-            ["get", "priority_score"],
-            min_score, "#ffffcc",  # Light yellow for low priority
-            max_score, "#ff0000"    # Deep red for high priority
-        ],
-        "fill-opacity": 0.3,
-        "fill-outline-color": "#000000"
+    .dataframe tbody tr th {
+        vertical-align: top;
     }
-)
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>school_name</th>
+      <th>geometry</th>
+      <th>rank</th>
+      <th>priority_score</th>
+      <th>crashes_025mi</th>
+      <th>avg_aadt</th>
+      <th>total_aadt</th>
+      <th>display_rank</th>
+      <th>display_crashes</th>
+      <th>display_score</th>
+      <th>display_traffic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Somerville High School</td>
+      <td>POLYGON ((-71.09081 42.38675, -71.09083 42.386...</td>
+      <td>4</td>
+      <td>157.0</td>
+      <td>74</td>
+      <td>5347.0</td>
+      <td>876907</td>
+      <td>Rank: #4</td>
+      <td>Crashes: 74</td>
+      <td>Priority Score: 157.0</td>
+      <td>Traffic: 877.0k AADT</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Arthur D. Healey School</td>
+      <td>POLYGON ((-71.09053 42.39748, -71.09056 42.397...</td>
+      <td>5</td>
+      <td>121.0</td>
+      <td>58</td>
+      <td>5976.0</td>
+      <td>549837</td>
+      <td>Rank: #5</td>
+      <td>Crashes: 58</td>
+      <td>Priority Score: 121.0</td>
+      <td>Traffic: 550.0k AADT</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Benjamin G. Brown School</td>
+      <td>POLYGON ((-71.10911 42.39734, -71.10913 42.396...</td>
+      <td>8</td>
+      <td>60.0</td>
+      <td>27</td>
+      <td>3766.0</td>
+      <td>583794</td>
+      <td>Rank: #8</td>
+      <td>Crashes: 27</td>
+      <td>Priority Score: 60.0</td>
+      <td>Traffic: 584.0k AADT</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>East Somerville Community School</td>
+      <td>POLYGON ((-71.08248 42.38642, -71.08251 42.386...</td>
+      <td>2</td>
+      <td>194.0</td>
+      <td>91</td>
+      <td>6602.0</td>
+      <td>1161980</td>
+      <td>Rank: #2</td>
+      <td>Crashes: 91</td>
+      <td>Priority Score: 194.0</td>
+      <td>Traffic: 1162.0k AADT</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Albert F. Argenziano School</td>
+      <td>POLYGON ((-71.09341 42.37891, -71.09343 42.378...</td>
+      <td>3</td>
+      <td>175.0</td>
+      <td>80</td>
+      <td>7409.0</td>
+      <td>1503997</td>
+      <td>Rank: #3</td>
+      <td>Crashes: 80</td>
+      <td>Priority Score: 175.0</td>
+      <td>Traffic: 1504.0k AADT</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 
-# Now add individual interactive markers/popups for each buffer (like the airports example)
-popup_options = PopupOptions(close_button=True, close_on_click=False)
 
-# Iterate through each buffer to create an interactive element
-for idx, row in buffers_025_priority.iterrows():
-    # Get the centroid of the buffer for placing the popup/marker
-    # For polygons, we can use the centroid or the school point location
-    centroid = row.geometry.centroid
+```python
+# Cell 2: Define color and style functions
+
+# Calculate min/max for color scaling (using your data)
+min_score = buffers_025_priority_wgs84['priority_score'].min()
+max_score = buffers_025_priority_wgs84['priority_score'].max()
+mid_score = (min_score + max_score) / 2
+
+print(f"Color scale: Green ({min_score:.0f}) → Yellow ({mid_score:.0f}) → Red ({max_score:.0f})")
+
+# Function to get color based on priority score (Green → Yellow → Red)
+def get_buffer_color(score):
+    norm = (score - min_score) / (max_score - min_score)
     
-    # Find the corresponding school point for better popup placement
-    school_row = schools_priority_ranks_wgs84[
-        schools_priority_ranks_wgs84['school_name'] == row['school_name']
-    ]
-    
-    # Use school location if available, otherwise use buffer centroid
-    if len(school_row) > 0:
-        popup_lng = school_row.iloc[0].geometry.x
-        popup_lat = school_row.iloc[0].geometry.y
+    # Three-stop interpolation: Green (0,255,0) → Yellow (255,255,0) → Red (255,0,0)
+    if norm <= 0.5:
+        # Green to Yellow segment
+        local_norm = norm * 2  # Scale 0-0.5 to 0-1
+        r = int(255 * local_norm)
+        g = 255
+        b = 0
     else:
-        popup_lng = centroid.x
-        popup_lat = centroid.y
+        # Yellow to Red segment
+        local_norm = (norm - 0.5) * 2  # Scale 0.5-1 to 0-1
+        r = 255
+        g = int(255 * (1 - local_norm))
+        b = 0
     
-    # Create a rich HTML popup
-    popup_html = f"""
-    <div style="font-family: Arial, sans-serif; padding: 5px;">
-        <h3 style="margin: 0 0 5px 0;">{row['school_name']}</h3>
-        <table style="width: 100%; font-size: 12px;">
-            <tr><td>Priority Score:</td><td><b>{row['priority_score']:.0f}</b></td></tr>
-            <tr><td>Rank:</td><td><b>#{row['rank']:.0f}</b></td></tr>
-            <tr><td>Crashes (0.25mi):</td><td><b>{row['crashes_025mi']:.0f}</b></td></tr>
-            <tr><td>Total AADT:</td><td><b>{row['total_aadt']:,.0f}</b></td></tr>
-            <tr><td>Injury Crashes:</td><td><b>{row.get('injury_crashes', 0):.0f}</b></td></tr>
-        </table>
+    return f'#{r:02x}{g:02x}{b:02x}'
+
+# Style callback for GeoJSON
+def style_callback(feature):
+    return {
+        'color': 'black',
+        'weight': 1,
+        'fillColor': feature['properties']['fill_color'],
+        'fillOpacity': 0.3
+    }
+
+print("✅ Color functions defined")
+```
+
+    Color scale: Green (60) → Yellow (136) → Red (212)
+    ✅ Color functions defined
+
+
+
+```python
+# Cell 3: Define hover callback (needs hover_info widget, defined in next cell)
+# We'll define the function body later after hover_info exists
+# For now, create a placeholder
+hover_callback = None
+```
+
+
+```python
+# Cell 4: Initialize map and hover info panel
+
+# Create map centered on Somerville
+m = Map(
+    center=(42.3875, -71.0995),
+    zoom=13,
+    basemap=basemaps.CartoDB.Positron
+)
+
+# Create HTML widget for hover info
+hover_info = widgets.HTML(
+    value="""
+    <div style="
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        min-width: 250px;
+        border-left: 4px solid #E39414;
+    ">
+        <h4 style="margin: 0 0 8px 0; color: #333;">School Safety Info</h4>
+        <p style="margin: 0; color: #666; font-style: italic;">Hover over a buffer to see details</p>
     </div>
-    """
-    
+    """,
+    layout=widgets.Layout(width='300px')
+)
+
+# Add widget to map
+info_control = WidgetControl(widget=hover_info, position='bottomleft')
+m.add(info_control)
+
+print("✅ Map and hover widget initialized")
+```
+
+    ✅ Map and hover widget initialized
 
 
 
+```python
+# Cell 5: Define hover and mouseout handlers
 
-# Display the map
+def on_buffer_hover(event=None, feature=None, **kwargs):
+    """Handle mouseover events - show tooltip."""
+    if feature and 'properties' in feature:
+        props = feature['properties']
+        
+        school_name = props.get('school_name', 'Unknown School')
+        priority_score = props.get('priority_score', 'N/A')
+        rank = props.get('rank', 'N/A')
+        crashes = props.get('crashes_025mi', 'N/A')
+        total_aadt = props.get('total_aadt', 'N/A')
+        
+        if isinstance(total_aadt, (int, float)):
+            total_aadt = f"{total_aadt:,.0f}"
+        
+        fill_color = props.get('fill_color', '#E39414')
+        
+        hover_info.value = f"""
+        <div style="
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            min-width: 250px;
+            border-left: 4px solid {fill_color};
+        ">
+            <h4 style="margin: 0 0 8px 0; color: #333;">{school_name}</h4>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr><td><b>Rank:</b></td><td style="text-align: right;">#{rank}</td></tr>
+                <tr><td><b>Crashes (0.25mi):</b></td><td style="text-align: right;">{crashes}</td></tr>
+                <tr><td><b>Traffic (AADT):</b></td><td style="text-align: right;">{total_aadt}</td></tr>
+                <tr><td><b>Priority Score:</b></td><td style="text-align: right;">{priority_score}</td></tr>
+            </table>
+        </div>
+        """
+        
+        # Ensure the control is on the map (in case it was removed)
+        if info_control not in m.controls:
+            m.add(info_control)
+
+
+def on_buffer_msg(_, content, buffers):
+    """Handle all messages, including mouseout events."""
+    event_type = content.get('type', '')
+    if event_type == 'mouseout':
+        # Reset to default message
+        hover_info.value = """
+        <div style="
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            min-width: 250px;
+            border-left: 4px solid #E39414;
+        ">
+            <h4 style="margin: 0 0 8px 0; color: #333;">School Traffic Safety Info</h4>
+            <p style="margin: 0; color: #666; font-style: italic;">Hover over a buffer to see details</p>
+        </div>
+        """
+        
+print("✅ Hover callback defined")
+```
+
+    ✅ Hover callback defined
+
+
+
+```python
+# Cell 6: Prepare buffer data with colors
+
+# Add color column to the GeoDataFrame
+buffers_025_priority_wgs84['fill_color'] = buffers_025_priority_wgs84['priority_score'].apply(get_buffer_color)
+
+# Convert to GeoJSON
+buffers_geojson = json.loads(buffers_025_priority_wgs84.to_json())
+
+print(f"✅ Prepared {len(buffers_025_priority_wgs84)} buffers with colors")
+```
+
+    ✅ Prepared 8 buffers with colors
+
+
+
+```python
+# Cell 7: Add Somerville boundary
+boundary_geojson = json.loads(boundary_wgs84.to_json())
+
+boundary_layer = GeoJSON(
+    data=boundary_geojson,
+    name="Somerville Boundary",
+    style={
+        'color': '#E39414',
+        'weight': 3,
+        'opacity': 0.5,
+        'fill': False
+    }
+)
+```
+
+
+```python
+# Cell 8: Add crashes
+crashes_geo = GeoData(
+    geo_dataframe=total_crashes_wgs84,
+    style={'color': 'none', 'radius': 2, 'fillColor': '#3366cc', 
+           'opacity': 1, 'weight': 1.9, 'fillOpacity': 0.4},
+    point_style={'radius': 5, 'color': 'red', 'fillOpacity': 0.8, 
+                 'fillColor': 'blue', 'weight': 3},
+    name='Crashes'
+)
+
+```
+
+
+```python
+# Cell 9: Add buffers layer with hover and mouseout
+
+# Create GeoJSON layer
+buffers_layer = GeoJSON(
+    data=buffers_geojson,
+    style={
+        'opacity': 1,
+        'fillOpacity': 0.2,
+        'weight': 0
+    },
+    hover_style={
+        'color': 'white',
+        'fillOpacity': 0.3,
+        'weight': 2
+    },
+    style_callback=style_callback
+)
+
+# Register hover (mouseover) callback
+buffers_layer.on_hover(on_buffer_hover)
+
+# Register message listener for mouseout and other events
+buffers_layer.on_msg(on_buffer_msg)
+```
+
+
+```python
+# Cell 10: Add all layers
+
+m.add(boundary_layer)
+
+
+m.add(crashes_geo)
+
+
+m.add(buffers_layer)
+
+_ = None
+```
+
+#### Render Interactive map
+
+
+```python
 m
 ```
 
 
-```python
 
-```
+
+    Map(center=[42.3875, -71.0995], controls=(ZoomControl(options=['position', 'zoom_in_text', 'zoom_in_title', 'z…
+
+
