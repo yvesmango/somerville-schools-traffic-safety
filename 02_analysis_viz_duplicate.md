@@ -514,7 +514,7 @@ if 'Crash_Severity' in crashes_in_025.columns:
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_11_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_11_0.png)
     
 
 
@@ -944,7 +944,7 @@ print(f"Crashes within buffers (spatial join result): {len(crashes_in_025)}")
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_18_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_18_0.png)
     
 
 
@@ -980,7 +980,7 @@ print(f"AADT range: {traffic['AADT'].min():,.0f} - {traffic['AADT'].max():,.0f}"
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_19_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_19_0.png)
     
 
 
@@ -1054,7 +1054,7 @@ print(f"Traffic segments intersecting this buffer (Winter Hill Community Innovat
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_21_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_21_0.png)
     
 
 
@@ -1616,7 +1616,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_28_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_28_0.png)
     
 
 
@@ -1665,7 +1665,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_29_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_29_0.png)
     
 
 
@@ -1750,7 +1750,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_30_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_30_0.png)
     
 
 
@@ -1997,7 +1997,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_33_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_33_0.png)
     
 
 
@@ -2129,7 +2129,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_35_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_35_0.png)
     
 
 
@@ -2246,7 +2246,7 @@ plt.show()
 
 
     
-![png](02_analysis_viz_files/02_analysis_viz_36_0.png)
+![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_36_0.png)
     
 
 
