@@ -13,6 +13,6 @@ navigation:
   - name: Read me
     link: ./index.html
   - name: Jupyter notebook
-    link: ./duplicate-ssrs-analysis-viz
+    link: ./02_analysis_viz_duplicate
   - name: Executive Summary
     link: ./03_exec_summary
