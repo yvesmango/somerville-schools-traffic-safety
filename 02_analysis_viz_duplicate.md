@@ -2735,16 +2735,11 @@ m.add(buffers_layer)
 _ = None
 ```
 
-#### Render Interactive map
+#### Render Interactive map (iframe)
 
 
 ```python
 m
 ```
 
-
-
-
-    Map(center=[42.3875, -71.0995], controls=(ZoomControl(options=['position', 'zoom_in_text', 'zoom_in_title', 'z…
-
-
+<iframe src="../outputs/interactive_priority_map.html" width="90%" height="600px" frameborder="0"></iframe>
