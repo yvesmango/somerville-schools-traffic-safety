@@ -1,0 +1,9 @@
+school_name,crashes_025mi,segment_count,avg_aadt,max_aadt,total_aadt,crashes_per_10k_aadt,priority_score,rank
+Winter Hill Community Innovation School,100,168,7326.0,51451,1230836,0.81,212.0,1
+East Somerville Community School,91,176,6602.0,50545,1161980,0.78,194.0,2
+Albert F. Argenziano School,80,203,7409.0,22890,1503997,0.53,175.0,3
+Somerville High School,74,164,5347.0,20556,876907,0.84,157.0,4
+Arthur D. Healey School,58,92,5976.0,156877,549837,1.05,121.0,5
+John F. Kennedy School,43,163,5689.0,17686,927332,0.46,95.0,6
+West Somerville Neighborhood School,36,161,4521.0,9363,727821,0.49,79.0,7
+Benjamin G. Brown School,27,155,3766.0,13118,583794,0.46,60.0,8
