@@ -9,13 +9,13 @@ import os
 
 # Page configuration
 st.set_page_config(
-    page_title="Somerville School Safety - Interactive Map",
+    page_title="Streamlit - SSTS",
     page_icon="🚸",
     layout="wide"
 )
 
 # Title and description
-st.title("🚸 Somerville School Safety Interactive Map")
+st.title("🏫 Somerville Schools Traffic Safety Map 🚸")
 st.markdown("""
 This interactive map shows school safety priority zones in Somerville, MA. 
 **Hover over any colored buffer** to see detailed statistics for that school.
@@ -29,7 +29,7 @@ def load_data():
     data_processed = '../data/processed'
     
     # Load buffers with priority scores
-    buffers = gpd.read_file(f'{data_processed}/school_buffers_025mi.geojson')
+    buffers = gpd.read_file(f'{data_processed}/school_buffers_complete_ranks.geojson')
     
     # Load crashes
     crashes = gpd.read_file(f'{data_processed}/crashes_somerville_2023_2025_processed.geojson')
@@ -41,7 +41,7 @@ def load_data():
     schools = gpd.read_file(f'{data_processed}/somerville_schools_processed.geojson')
     
     # Load priority data (assuming you saved as CSV)
-    priority_df = pd.read_csv('../outputs/school_safety_summary.csv')
+    priority_df = pd.read_csv('../outputs/schools_traffic_priority_final.csv')
     
     return buffers, crashes, boundary, schools, priority_df
 
@@ -63,7 +63,7 @@ with st.sidebar:
     """)
     
     st.header("Priority Rankings")
-    st.dataframe(priority_df[['rank', 'school_name', 'crashes_025mi', 'injury_pct', 'priority_score']])
+    st.dataframe(priority_df[['school_name', 'crashes_025mi', 'injury_pct', 'avg_aadt', 'priority_score', 'rank',]])
     
     st.header("Instructions")
     st.markdown("""
@@ -106,24 +106,30 @@ buffers['fill_color'] = buffers['priority_score'].apply(get_buffer_color)
 # Create map
 m = leafmap.Map(center=[42.3875, -71.0995], zoom=13)
 
+m.add_basemap('CartoDB.Positron')
+
 # Add boundary
 m.add_gdf(
     boundary,
     layer_name="Somerville Boundary",
-    style={'color': '#E39414', 'weight': 3, 'opacity': 0.5, 'fill': False}
+    style={'color': '#E39414', 'weight': 3, 'opacity': 0.5, 'fill': False},
+    info_mode=None
 )
 
 # Add crashes
 m.add_gdf(
     crashes,
     layer_name="Crashes (2023-2025)",
-    style={'color': 'none', 'radius': 2, 'fillColor': '#3366cc', 
-           'opacity': 0.5, 'fillOpacity': 0.6},
-    hover_style={'fillColor': '#3366cc', 'fillOpacity': 0.2}
+    style={'color': 'none', 'radius': 1, 'fillColor': '#3366cc', 
+       'opacity': 0.3, 'fillOpacity': 0.4, 'weight': 1},
+    hover_style=None,
+    info_mode=None
+
 )
 
 # Add buffers with dynamic coloring using style_callback
 buffers_geojson = json.loads(buffers.to_json())
+
 m.add_geojson(
     buffers_geojson,
     layer_name="School Priority Buffers",
@@ -142,12 +148,10 @@ m.add_geojson(
 )
 
 # Add schools
-m.add_gdf(
-    schools,
-    layer_name="Schools",
-    style={'color': 'black', 'fillColor': 'white', 'radius': 8, 'weight': 2},
-    tooltip=['school_name', 'rank', 'priority_score']
-)
+# Add schools
+m.add_gdf(schools, layer_name="Schools",
+          style={'color': 'purple', 'fillColor': 'white', 'radius': 8, 'weight': 2})
+
 
 # Display the map using Streamlit
 m.to_streamlit(height=700)
@@ -166,4 +170,4 @@ with col3:
 # Show top 3 priority schools
 st.subheader("Top Priority Schools")
 top3 = priority_df.nlargest(3, 'priority_score')[['school_name', 'crashes_025mi', 'injury_pct', 'priority_score']]
-st.dataframe(top3, use_container_width=True)
+st.dataframe(top3, width='stretch')
