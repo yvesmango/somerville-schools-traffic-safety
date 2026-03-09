@@ -3,8 +3,10 @@ import streamlit as st
 import leafmap.foliumap as leafmap
 import geopandas as gpd
 import pandas as pd
+import requests
 import json
 import os
+from io import BytesIO
 
 
 # Page configuration
@@ -25,23 +27,29 @@ This interactive map shows school safety priority zones in Somerville, MA.
 @st.cache_data
 def load_data():
     """Load all necessary GeoDataFrames."""
-    # Adjust paths to go up one level from streamlit_app/
-    data_processed = '../data/processed'
+
+    # Base URL for your release
+    base_url = "https://github.com/yvesmango/somerville-schools-traffic-safety/releases/download/v1.0-data-connx"
     
-    # Load buffers with priority scores
-    buffers = gpd.read_file(f'{data_processed}/school_buffers_complete_ranks.geojson')
     
-    # Load crashes
-    crashes = gpd.read_file(f'{data_processed}/crashes_somerville_2023_2025_processed.geojson')
+        # Helper function to load GeoJSON from URL
+    def load_geojson_from_url(filename):
+        url = f"{base_url}/{filename}"
+        response = requests.get(url)
+        response.raise_for_status()  # Check for errors
+        return gpd.read_file(BytesIO(response.content))
     
-    # Load boundary
-    boundary = gpd.read_file(f'{data_processed}/somerville_boundary.geojson')
+    # Helper function to load CSV from URL
+    def load_csv_from_url(filename):
+        url = f"{base_url}/{filename}"
+        return pd.read_csv(url)
     
-    # Load schools with priority rankings
-    schools = gpd.read_file(f'{data_processed}/somerville_schools_processed.geojson')
-    
-    # Load priority data (assuming you saved as CSV)
-    priority_df = pd.read_csv('../outputs/schools_traffic_priority_final.csv')
+    # Load all files
+    buffers = load_geojson_from_url('school_buffers_complete_ranks.geojson')
+    crashes = load_geojson_from_url('crashes_somerville_2023_2025_processed.geojson')
+    boundary = load_geojson_from_url('somerville_boundary.geojson')
+    schools = load_geojson_from_url('somerville_schools_processed.geojson')
+    priority_df = load_csv_from_url('schools_traffic_priority_final.csv')
     
     return buffers, crashes, boundary, schools, priority_df
 
