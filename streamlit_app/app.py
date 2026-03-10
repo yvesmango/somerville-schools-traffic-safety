@@ -66,13 +66,12 @@ with st.sidebar:
     This map displays school safety priority scores based on:
     - Crash data (2023-2025)
     - Traffic volume (AADT)
-    - Injury severity
     
     **Color scale**: Green (🟢 = low priority, 🌕 = medium, 🔴 = high priority)
     """)
     
     st.header("Priority Rankings")
-    st.dataframe(priority_df[['school_name', 'crashes_025mi', 'injury_pct', 'avg_aadt', 'priority_score', 'rank',]])
+    st.dataframe(priority_df[['school_name', 'crashes_025mi', 'injury_pct', 'total_aadt', 'priority_score', 'rank',]])
     
     st.header("Instructions")
     st.markdown("""
@@ -132,7 +131,7 @@ folium.GeoJson(
 folium.GeoJson(
     crashes,
     name="Crash Points",
-    marker=folium.Circle(radius=7, fill_color="blue", fill_opacity=0.5, weight=1, color=None)
+    marker=folium.Circle(radius=7, fill_color="blue", fill_opacity=0.4, weight=1, color=None)
 ).add_to(m)
 
 
@@ -153,15 +152,15 @@ folium.GeoJson(
     buffers,
     name="School Priority Buffers",
     style_function=lambda x: {
-        'color': 'black',
+        'color': None,
         'weight': 1,
         'fillColor': get_buffer_color(x['properties']['priority_score']),
-        'fillOpacity': 0.3
+        'fillOpacity': 0.2
     },
     highlight_function=lambda x: {
         'color': 'white',
         'weight': 2,
-        'fillOpacity': 0.5
+        'fillOpacity': 0.4
     },
     tooltip=folium.GeoJsonTooltip(
         fields=['school_name', 'rank', 'priority_score', 'crashes_025mi', 'total_aadt', 'avg_aadt', 'injury_pct'],
@@ -174,13 +173,25 @@ folium.GeoJson(
 
 st_folium(m, width=None, height=700)
 
+# After the map, add a colorbar
+st.markdown(f"""
+<div style="display: flex; justify-content: center; margin: 10px 0;">
+    <div style="display: flex; align-items: center; background: white; padding: 5px 15px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="margin-right: 10px; font-weight: bold;">Priority Score:</span>
+        <span style="color: #00ff00;">Low ({min_score:.0f})</span>
+        <div style="width: 150px; height: 15px; background: linear-gradient(to right, #00ff00, #ffff00, #ff0000); margin: 0 10px; border-radius: 10px;"></div>
+        <span style="color: #ff0000;">High ({max_score:.0f})</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 
 # Add some analysis below the map
 st.header("Key Insights")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric("Total Crashes (2023-2025)", f"{len(crashes)}")
+    st.metric("Total Crashes Recorded (2023-2025)", f"{len(crashes)}")
 with col2:
     st.metric("Schools Analyzed", f"{len(schools)}")
 with col3:
@@ -188,5 +199,5 @@ with col3:
 
 # Show top 3 priority schools
 st.subheader("Top Priority Schools")
-top3 = priority_df.nlargest(3, 'priority_score')[['school_name', 'crashes_025mi', 'injury_pct', 'priority_score']]
+top3 = priority_df.nlargest(3, 'priority_score')[['school_name', 'crashes_025mi', 'total_aadt', 'avg_aadt', 'injury_pct', 'priority_score']]
 st.dataframe(top3, width='stretch')
