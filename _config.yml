@@ -15,4 +15,4 @@ navigation:
   - name: Jupyter notebook
     link: ./02_analysis_viz_duplicate
   - name: Executive Summary
-    link: ./03_exec_summary.ipynb
+    link: ./03_exec_summary
