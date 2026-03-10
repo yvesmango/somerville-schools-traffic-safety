@@ -1,7 +1,7 @@
 # streamlit_app/app.py
 import streamlit as st
+import leafmap.foliumap as leafmap
 import folium
-from streamlit_folium import st_folium
 import geopandas as gpd
 import pandas as pd
 import requests
@@ -49,7 +49,7 @@ def load_data():
     buffers = load_geojson_from_url('school_buffers_complete_ranks.geojson')
     crashes = load_geojson_from_url('crashes_somerville_wgs84.geojson')
     boundary = load_geojson_from_url('somerville_boundary.geojson')
-    schools = load_geojson_from_url('somerville_schools_ranks_wgs84.geojson')
+    schools = load_geojson_from_url('somerville_schools_processed.geojson')
     priority_df = load_csv_from_url('schools_traffic_priority_final.csv')
     
     return buffers, crashes, boundary, schools, priority_df
@@ -112,68 +112,59 @@ def get_buffer_color(score):
 # Add color column to buffers
 buffers['fill_color'] = buffers['priority_score'].apply(get_buffer_color)
 
+# Create map
+m = leafmap.Map(center=[42.3875, -71.0995], zoom=13)
 
-# Create base map
-m = folium.Map(location=[42.3875, -71.0995], zoom_start=13, tiles='CartoDB Positron')
+m.add_basemap('CartoDB.Positron')
 
 # Add boundary
-folium.GeoJson(
+m.add_gdf(
     boundary,
-    name="Somerville Boundary",
-    style_function=lambda x: {
-        'color': '#E39414',
-        'weight': 3,
-        'opacity': 0.5,
-        'fill': False
-    }
-).add_to(m)
+    layer_name="Somerville Boundary",
+    style={'color': '#E39414', 'weight': 3, 'opacity': 0.5, 'fill': False},
+    info_mode=None
+)
 
-# Add crash points
-folium.GeoJson(
+st.write("crashes CRS:", crashes.crs)
+
+# # Add crashes
+m.add_circle_markers_from_xy(
     crashes,
-    name="Crash Points",
-    marker=folium.Circle(radius=7, fill_color="blue", fill_opacity=0.5, weight=1, color=None)
-).add_to(m)
+    x="X_Cooordinate",
+    y="Y_Cooordinate",
+    radius=1.5,
+    color="red",
+    fill_color="#1a58e8"
+
+)
 
 
-# Add schools
-for idx, row in schools.iterrows():
-    folium.RegularPolygonMarker(
-        location=[row.geometry.y, row.geometry.x],
-        number_of_sides=4,
-        radius=6,
-        rotation=45,
-        color='black',
-        fillColor='black',
-        fillOpacity=1,
-        weight=2).add_to(m)
+# Add buffers with dynamic coloring using style_callback
+buffers_geojson = json.loads(buffers.to_json())
 
-
-folium.GeoJson(
-    buffers,
-    name="School Priority Buffers",
-    style_function=lambda x: {
+m.add_geojson(
+    buffers_geojson,
+    layer_name="School Priority Buffers",
+    style_callback=lambda f: {
         'color': 'black',
         'weight': 1,
-        'fillColor': get_buffer_color(x['properties']['priority_score']),
+        'fillColor': f['properties']['fill_color'],
         'fillOpacity': 0.3
     },
-    highlight_function=lambda x: {
-        'color': 'white',
-        'weight': 2,
-        'fillOpacity': 0.5
+    hover_style={
+        'fillOpacity': 0.8,
+        'weight': 1
     },
-    tooltip=folium.GeoJsonTooltip(
-        fields=['school_name', 'rank', 'priority_score', 'crashes_025mi', 'total_aadt', 'avg_aadt', 'injury_pct'],
-        aliases=['School:', 'Rank:', 'Priority Score:', 'Crashes:', 'Total AADT:', 'Avg. AADT:', 'Injury Rate Pct:'],
-        localize=True,
-        sticky=False
-    )
-).add_to(m)
+    info_mode='on_hover'  # This enables hover tooltips in leafmap
+)
+
+# Add schools
+m.add_gdf(schools, layer_name="Schools",
+          style={'color': 'purple', 'fillColor': 'white', 'radius': 8, 'weight': 2})
 
 
-st_folium(m, width=None, height=700)
-
+# Display the map using Streamlit
+m.to_streamlit(height=700)
 
 # Add some analysis below the map
 st.header("Key Insights")
