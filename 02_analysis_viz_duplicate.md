@@ -1,7 +1,7 @@
 ## Somerville Schools Traffic Analysis
 ### Phase 3-4: Analysis & Visualization
 
-This notebook loads the [processed data from Phase 1-2](https://github.com/yvesmango/somerville-schools-traffic-safety/releases/tag/v1.0-data-connx) and performs:
+This notebook loads the processed data from Phase 1-2 and performs:
 - Spatial joins (crashes to school buffers)
 - Per-school crash statistics
 - Traffic volume analysis near schools
@@ -1270,13 +1270,30 @@ print("\n🏫 FINAL SCHOOL SAFETY PRIORITY RANKING")
 print("=" * 90)
 display_cols = ['rank', 'school_name', 'crashes_025mi', 'total_aadt', 
                 'crashes_per_10k_aadt', 'priority_score']
-print(priority_final[display_cols].to_string(index=False))
-display(priority_final)
 ```
 
     
     🏫 FINAL SCHOOL SAFETY PRIORITY RANKING
     ==========================================================================================
+
+
+
+```python
+injury_counts = crashes_in_025[crashes_in_025['Crash_Severity'].str.contains('injury', case=False, na=False)] \
+    .groupby('school_name').size().reset_index(name='injury_crashes')
+
+# Merge with priority_final
+priority_final = priority_final.merge(
+    injury_counts, 
+    on='school_name', 
+    how='left'
+).fillna(0)
+
+priority_final['injury_pct'] = (priority_final['injury_crashes'] / priority_final['crashes_025mi'] * 100).round(1)
+print(priority_final[display_cols].to_string(index=False))
+display(priority_final)
+```
+
      rank                             school_name  crashes_025mi  total_aadt  crashes_per_10k_aadt  priority_score
         1 Winter Hill Community Innovation School            100     1230836                  0.81           212.0
         2        East Somerville Community School             91     1161980                  0.78           194.0
@@ -1316,6 +1333,8 @@ display(priority_final)
       <th>crashes_per_10k_aadt</th>
       <th>priority_score</th>
       <th>rank</th>
+      <th>injury_crashes</th>
+      <th>injury_pct</th>
     </tr>
   </thead>
   <tbody>
@@ -1330,6 +1349,8 @@ display(priority_final)
       <td>0.81</td>
       <td>212.0</td>
       <td>1</td>
+      <td>31</td>
+      <td>31.0</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1342,6 +1363,8 @@ display(priority_final)
       <td>0.78</td>
       <td>194.0</td>
       <td>2</td>
+      <td>30</td>
+      <td>33.0</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1354,6 +1377,8 @@ display(priority_final)
       <td>0.53</td>
       <td>175.0</td>
       <td>3</td>
+      <td>30</td>
+      <td>37.5</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1366,6 +1391,8 @@ display(priority_final)
       <td>0.84</td>
       <td>157.0</td>
       <td>4</td>
+      <td>25</td>
+      <td>33.8</td>
     </tr>
     <tr>
       <th>4</th>
@@ -1378,6 +1405,8 @@ display(priority_final)
       <td>1.05</td>
       <td>121.0</td>
       <td>5</td>
+      <td>15</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>5</th>
@@ -1390,6 +1419,8 @@ display(priority_final)
       <td>0.46</td>
       <td>95.0</td>
       <td>6</td>
+      <td>18</td>
+      <td>41.9</td>
     </tr>
     <tr>
       <th>6</th>
@@ -1402,6 +1433,8 @@ display(priority_final)
       <td>0.49</td>
       <td>79.0</td>
       <td>7</td>
+      <td>9</td>
+      <td>25.0</td>
     </tr>
     <tr>
       <th>7</th>
@@ -1414,6 +1447,8 @@ display(priority_final)
       <td>0.46</td>
       <td>60.0</td>
       <td>8</td>
+      <td>7</td>
+      <td>25.9</td>
     </tr>
   </tbody>
 </table>
@@ -1427,7 +1462,7 @@ display(priority_final)
 # Cell 14: Merge priority scores with school geometries
 # Ensure both are in the same CRS
 schools_priority_ranks = schools.merge(
-    priority_final[['school_name', 'priority_score', 'crashes_025mi', 'avg_aadt','total_aadt', 'crashes_per_10k_aadt', 'rank']],
+    priority_final[['school_name', 'priority_score', 'crashes_025mi', 'avg_aadt','total_aadt', 'crashes_per_10k_aadt', 'rank', 'injury_crashes', 'injury_pct']],
     on='school_name',
     how='left'
 )
@@ -1441,6 +1476,7 @@ norm = plt.Normalize(vmin=priority_final['priority_score'].min(),
                      vmax=priority_final['priority_score'].max())
 
 print(f"Priority score range: {priority_final['priority_score'].min()} - {priority_final['priority_score'].max()}")
+display(schools_priority_ranks)
 ```
 
     ✅ Schools now have priority attributes
@@ -1451,13 +1487,6 @@ print(f"Priority score range: {priority_final['priority_score'].min()} - {priori
     3  East Somerville Community School     2           194.0
     4       Albert F. Argenziano School     3           175.0
     Priority score range: 60.0 - 212.0
-
-
-
-```python
-schools_priority_ranks.head()
-```
-
 
 
 
@@ -1491,6 +1520,8 @@ schools_priority_ranks.head()
       <th>total_aadt</th>
       <th>crashes_per_10k_aadt</th>
       <th>rank</th>
+      <th>injury_crashes</th>
+      <th>injury_pct</th>
     </tr>
   </thead>
   <tbody>
@@ -1508,6 +1539,8 @@ schools_priority_ranks.head()
       <td>876907</td>
       <td>0.84</td>
       <td>4</td>
+      <td>25</td>
+      <td>33.8</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1523,6 +1556,8 @@ schools_priority_ranks.head()
       <td>549837</td>
       <td>1.05</td>
       <td>5</td>
+      <td>15</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1538,6 +1573,8 @@ schools_priority_ranks.head()
       <td>583794</td>
       <td>0.46</td>
       <td>8</td>
+      <td>7</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1553,6 +1590,8 @@ schools_priority_ranks.head()
       <td>1161980</td>
       <td>0.78</td>
       <td>2</td>
+      <td>30</td>
+      <td>33.0</td>
     </tr>
     <tr>
       <th>4</th>
@@ -1568,11 +1607,63 @@ schools_priority_ranks.head()
       <td>1503997</td>
       <td>0.53</td>
       <td>3</td>
+      <td>30</td>
+      <td>37.5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>John F. Kennedy School</td>
+      <td>42.389795</td>
+      <td>-71.115946</td>
+      <td>5 Cherry Street, Somerville, MA 02144, United ...</td>
+      <td>0</td>
+      <td>POINT (231623.223 904436.357)</td>
+      <td>95.0</td>
+      <td>43</td>
+      <td>5689.0</td>
+      <td>927332</td>
+      <td>0.46</td>
+      <td>6</td>
+      <td>18</td>
+      <td>41.9</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>West Somerville Neighborhood School</td>
+      <td>42.406166</td>
+      <td>-71.126467</td>
+      <td>177 Powder House Boulevard, Somerville, MA 021...</td>
+      <td>0</td>
+      <td>POINT (230748.96 906250.945)</td>
+      <td>79.0</td>
+      <td>36</td>
+      <td>4521.0</td>
+      <td>727821</td>
+      <td>0.49</td>
+      <td>7</td>
+      <td>9</td>
+      <td>25.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Winter Hill Community Innovation School</td>
+      <td>42.387574</td>
+      <td>-71.087559</td>
+      <td>33 Cross Street, Somerville, MA 02145, United ...</td>
+      <td>0</td>
+      <td>POINT (233961.792 904200.574)</td>
+      <td>212.0</td>
+      <td>100</td>
+      <td>7326.0</td>
+      <td>1230836</td>
+      <td>0.81</td>
+      <td>1</td>
+      <td>31</td>
+      <td>31.0</td>
     </tr>
   </tbody>
 </table>
 </div>
-
 
 
 
@@ -1801,6 +1892,8 @@ priority_final
       <th>crashes_per_10k_aadt</th>
       <th>priority_score</th>
       <th>rank</th>
+      <th>injury_crashes</th>
+      <th>injury_pct</th>
     </tr>
   </thead>
   <tbody>
@@ -1815,6 +1908,8 @@ priority_final
       <td>0.81</td>
       <td>212.0</td>
       <td>1</td>
+      <td>31</td>
+      <td>31.0</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1827,6 +1922,8 @@ priority_final
       <td>0.78</td>
       <td>194.0</td>
       <td>2</td>
+      <td>30</td>
+      <td>33.0</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1839,6 +1936,8 @@ priority_final
       <td>0.53</td>
       <td>175.0</td>
       <td>3</td>
+      <td>30</td>
+      <td>37.5</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1851,6 +1950,8 @@ priority_final
       <td>0.84</td>
       <td>157.0</td>
       <td>4</td>
+      <td>25</td>
+      <td>33.8</td>
     </tr>
     <tr>
       <th>4</th>
@@ -1863,6 +1964,8 @@ priority_final
       <td>1.05</td>
       <td>121.0</td>
       <td>5</td>
+      <td>15</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>5</th>
@@ -1875,6 +1978,8 @@ priority_final
       <td>0.46</td>
       <td>95.0</td>
       <td>6</td>
+      <td>18</td>
+      <td>41.9</td>
     </tr>
     <tr>
       <th>6</th>
@@ -1887,6 +1992,8 @@ priority_final
       <td>0.49</td>
       <td>79.0</td>
       <td>7</td>
+      <td>9</td>
+      <td>25.0</td>
     </tr>
     <tr>
       <th>7</th>
@@ -1899,6 +2006,8 @@ priority_final
       <td>0.46</td>
       <td>60.0</td>
       <td>8</td>
+      <td>7</td>
+      <td>25.9</td>
     </tr>
   </tbody>
 </table>
@@ -1910,19 +2019,6 @@ priority_final
 ```python
 # Cell 15.1: Injury Rate Comparison Bar Chart
 
-# Prepare injury rate data from our severity breakdown
-
-injury_counts = crashes_in_025[crashes_in_025['Crash_Severity'].str.contains('injury', case=False, na=False)] \
-    .groupby('school_name').size().reset_index(name='injury_crashes')
-
-# Merge with priority_final
-priority_final = priority_final.merge(
-    injury_counts, 
-    on='school_name', 
-    how='left'
-).fillna(0)
-
-priority_final['injury_pct'] = (priority_final['injury_crashes'] / priority_final['crashes_025mi'] * 100).round(1)
 
 # Sort by injury rate for better visualization
 injury_chart_data = priority_final.sort_values('injury_pct', ascending=True)
@@ -2254,83 +2350,6 @@ plt.show()
 
 
 ```python
-buffer_025
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>school_name</th>
-      <th>geometry</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Somerville High School</td>
-      <td>POLYGON ((233694.728 904108.027, 233692.79 904...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Arthur D. Healey School</td>
-      <td>POLYGON ((233711.734 905299.884, 233709.796 90...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Benjamin G. Brown School</td>
-      <td>POLYGON ((232182.467 905277.243, 232180.53 905...</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>East Somerville Community School</td>
-      <td>POLYGON ((234380.424 904074.412, 234378.487 90...</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Albert F. Argenziano School</td>
-      <td>POLYGON ((233484.744 903236.028, 233482.807 90...</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>John F. Kennedy School</td>
-      <td>POLYGON ((232025.558 904436.357, 232023.621 90...</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>West Somerville Neighborhood School</td>
-      <td>POLYGON ((231151.295 906250.945, 231149.358 90...</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Winter Hill Community Innovation School</td>
-      <td>POLYGON ((234364.127 904200.574, 234362.19 904...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
 # Cell 16: Set pojections for web mapping
 
 # Ensure all data is in WGS84 (EPSG:4326) for web mapping
@@ -2345,16 +2364,25 @@ schools_priority_ranks_wgs84 = schools_priority_ranks.to_crs('EPSG:4326').copy()
 
 # Prepare buffer data with priority scores
 buffers_025_priority_wgs84 = buffers_025_priority.merge(
-    schools_priority_ranks_wgs84[['school_name', 'rank', 'priority_score', 'crashes_025mi', 'avg_aadt', 'total_aadt']],
+    schools_priority_ranks_wgs84[['school_name', 'rank', 'priority_score', 'crashes_025mi', 'avg_aadt', 'total_aadt', 'injury_crashes', 'injury_pct']],
     on='school_name',
     how='left'
 )
 
-# Add formatted display columns BEFORE converting to GeoJSON
-buffers_025_priority_wgs84['display_rank'] = 'Rank: #' + buffers_025_priority_wgs84['rank'].astype(str)
-buffers_025_priority_wgs84['display_crashes'] = 'Crashes: ' + buffers_025_priority_wgs84['crashes_025mi'].astype(str)
-buffers_025_priority_wgs84['display_score'] = 'Priority Score: ' + buffers_025_priority_wgs84['priority_score'].round(0).astype(str)
-buffers_025_priority_wgs84['display_traffic'] = 'Traffic: ' + (buffers_025_priority_wgs84['total_aadt']/1000).round(0).astype(str) + 'k AADT'
+buffers_025_priority_wgs84.to_file(
+        '../data/processed/school_buffers_complete_ranks.geojson',
+    driver='GeoJSON'
+)
+
+total_crashes_wgs84.to_file(
+        '../data/processed/crashes_somerville_wgs84.geojson',
+    driver='GeoJSON'
+)
+
+schools_priority_ranks_wgs84.to_file(
+        '../data/processed/somerville_schools_ranks_wgs84.geojson',
+    driver='GeoJSON'
+)
 
 print("✅ Data prepared for interactive map")
 print(f"Buffers: {len(buffers_025_priority_wgs84)}")
@@ -2395,10 +2423,8 @@ display(buffers_025_priority_wgs84.head())
       <th>crashes_025mi</th>
       <th>avg_aadt</th>
       <th>total_aadt</th>
-      <th>display_rank</th>
-      <th>display_crashes</th>
-      <th>display_score</th>
-      <th>display_traffic</th>
+      <th>injury_crashes</th>
+      <th>injury_pct</th>
     </tr>
   </thead>
   <tbody>
@@ -2411,10 +2437,8 @@ display(buffers_025_priority_wgs84.head())
       <td>74</td>
       <td>5347.0</td>
       <td>876907</td>
-      <td>Rank: #4</td>
-      <td>Crashes: 74</td>
-      <td>Priority Score: 157.0</td>
-      <td>Traffic: 877.0k AADT</td>
+      <td>25</td>
+      <td>33.8</td>
     </tr>
     <tr>
       <th>1</th>
@@ -2425,10 +2449,8 @@ display(buffers_025_priority_wgs84.head())
       <td>58</td>
       <td>5976.0</td>
       <td>549837</td>
-      <td>Rank: #5</td>
-      <td>Crashes: 58</td>
-      <td>Priority Score: 121.0</td>
-      <td>Traffic: 550.0k AADT</td>
+      <td>15</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>2</th>
@@ -2439,10 +2461,8 @@ display(buffers_025_priority_wgs84.head())
       <td>27</td>
       <td>3766.0</td>
       <td>583794</td>
-      <td>Rank: #8</td>
-      <td>Crashes: 27</td>
-      <td>Priority Score: 60.0</td>
-      <td>Traffic: 584.0k AADT</td>
+      <td>7</td>
+      <td>25.9</td>
     </tr>
     <tr>
       <th>3</th>
@@ -2453,10 +2473,8 @@ display(buffers_025_priority_wgs84.head())
       <td>91</td>
       <td>6602.0</td>
       <td>1161980</td>
-      <td>Rank: #2</td>
-      <td>Crashes: 91</td>
-      <td>Priority Score: 194.0</td>
-      <td>Traffic: 1162.0k AADT</td>
+      <td>30</td>
+      <td>33.0</td>
     </tr>
     <tr>
       <th>4</th>
@@ -2467,10 +2485,8 @@ display(buffers_025_priority_wgs84.head())
       <td>80</td>
       <td>7409.0</td>
       <td>1503997</td>
-      <td>Rank: #3</td>
-      <td>Crashes: 80</td>
-      <td>Priority Score: 175.0</td>
-      <td>Traffic: 1504.0k AADT</td>
+      <td>30</td>
+      <td>37.5</td>
     </tr>
   </tbody>
 </table>
@@ -2735,11 +2751,15 @@ m.add(buffers_layer)
 _ = None
 ```
 
-#### Render Interactive map (iframe)
+#### Render Interactive map
 
 
 ```python
-m
+# uncomment to render complete map
+# m 
 ```
 
-<iframe src="./outputs/interactive_priority_map.html" width="100%" height="600px" frameborder="0"></iframe>
+
+```python
+
+```
