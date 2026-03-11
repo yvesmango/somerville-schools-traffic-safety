@@ -1,4 +1,4 @@
-# Somerville School Safety Analysis
+# Somerville Schools Traffic Analysis
 ## Executive Summary
 
 This project moves beyond simply counting crashes near schools to understanding them in their proper context. By integrating three years of crash data (2023-2025) with traffic volume measurements, we developed a priority framework that answers not just "where do crashes happen?" but "where is the risk highest given how many cars are on the road?"
@@ -25,14 +25,11 @@ The map below shows school buffers color-coded by priority score (🟢 = low pri
 
 <iframe src="https://somerville-schools-traffic-safety.streamlit.app/?embed=true" height="700" width="100%" style="border: none; border-radius: 8px; margin: 20px 0;"></iframe>
 
-## Crash Volume vs. Average Street Traffic
+## Crash Volume vs. Total Street Traffic
 
-This chart compares total crashes (blue bars) with average daily traffic on nearby roads (purple line). Schools with both high crash counts and high average traffic are priorities for intervention.
+This chart compares total crashes (blue bars) with total traffic volume on nearby roads (purple line). Schools with both high crash counts and high traffic volume are priorities for intervention.
 
 ![png](02_analysis_viz_duplicate_files/02_analysis_viz_duplicate_35_0.png)
-
-# Crash vs traffic chart
-
 
 ## Injury Crash Percentage by School
 
@@ -42,9 +39,9 @@ This chart shows the percentage of crashes that resulted in injury at each schoo
 
 JFK's high injury percentage (42%) tells us that when crashes happen near JFK, they're more likely to be severe. This is a genuine safety concern. However, its low priority score stems from two factors:
 
-1. Low absolute crash count: JFK has only 43 total crashes within 0.25 miles—far fewer than Winter Hill (100), East Somerville (91), or Argenziano (80). Fewer crashes overall means fewer opportunities for injuries to occur, even if each crash carries higher risk.
+1. **Low absolute crash count:** JFK has only 43 total crashes within 0.25 miles—far fewer than Winter Hill (100), East Somerville (91), or Argenziano (80). Fewer crashes overall means fewer opportunities for injuries to occur, even if each crash carries higher risk.
 
-2. Moderate traffic exposure: JFK's total traffic volume (927,332 AADT) is substantial but not extreme. The priority score weights both crashes and traffic, so schools with both high crash counts AND high traffic volume rank higher.
+2. **Moderate traffic exposure:** JFK's total traffic volume (927,332 AADT) is substantial but not extreme. The priority score weights both crashes and traffic, so schools with both high crash counts *and* high traffic volume rank higher.
 
 ## Methodology Summary
 
