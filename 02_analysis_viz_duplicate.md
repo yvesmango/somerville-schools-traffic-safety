@@ -1,7 +1,7 @@
 ## Somerville Schools Traffic Analysis
 ### Phase 3-4: Analysis & Visualization
 
-This notebook loads the processed data from Phase 1-2 and performs:
+This notebook loads the ]processed data from Phase 1-2](https://github.com/yvesmango/somerville-schools-traffic-safety/releases/tag/v1.0-data-connx) and performs:
 - Spatial joins (crashes to school buffers)
 - Per-school crash statistics
 - Traffic volume analysis near schools
