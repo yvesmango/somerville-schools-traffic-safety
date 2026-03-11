@@ -23,12 +23,6 @@ This project combines spatial analysis and data visualization to assess school z
 3.  **Priority Ranking**: Developed a composite priority score weighting crash counts and total traffic volume (AADT) to rank schools.
 4.  **Visualization**: Created static maps with Matplotlib and an interactive map with Leafmap.
 
-## Key Findings
-  
-- *Winter Hill* and *East Somerville* schools are the top priorities due to high crash counts and traffic exposure.
-- *Healey School* has a high injury crash rate relative to its traffic, suggesting specific risks near I-93.
-- *Argenziano School* faces the highest total traffic volume from a dense street network.
-
 
 ## Outputs
 
