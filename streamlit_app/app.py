@@ -184,20 +184,3 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
-
-# Add some analysis below the map
-st.header("Key Insights")
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric("Total Crashes Recorded (2023-2025)", f"{len(crashes)}")
-with col2:
-    st.metric("Schools Analyzed", f"{len(schools)}")
-with col3:
-    st.metric("Priority Score Range", f"{min_score:.0f} - {max_score:.0f}")
-
-# Show top 3 priority schools
-st.subheader("Top Priority Schools")
-top3 = priority_df.nlargest(3, 'priority_score')[['school_name', 'crashes_025mi', 'total_aadt', 'avg_aadt', 'injury_pct', 'priority_score']]
-st.dataframe(top3, width='stretch')
