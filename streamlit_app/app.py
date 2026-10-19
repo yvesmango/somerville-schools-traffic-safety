@@ -17,6 +17,11 @@ st.set_page_config(
     layout="wide"
 )
 
+carto_key = st.secrets.get("CARTO_API_KEY", os.getenv("CARTO_API_KEY"))
+if not carto_key:
+    st.error("CARTO_API_KEY is not configured.")
+    st.stop()
+
 # Title and description
 st.title("🏫 Somerville Schools Traffic Safety Map 🚸")
 st.markdown("""
@@ -113,7 +118,22 @@ buffers['fill_color'] = buffers['priority_score'].apply(get_buffer_color)
 
 
 # Create base map
-m = folium.Map(location=[42.3875, -71.0995], zoom_start=13, tiles='CartoDB Positron')
+m = folium.Map(
+    location=[42.3875, -71.0995],
+    zoom_start=13,
+    tiles=None,
+)
+
+folium.TileLayer(
+    tiles=(
+        "https://basemaps.cartocdn.com/rastertiles/"
+        "voyager/{z}/{x}/{y}.png?key=" + carto_key
+    ),
+    attr="© OpenStreetMap contributors © CARTO",
+    name="CARTO Voyager",
+    max_zoom=20,
+).add_to(m)
+
 
 # Add boundary
 folium.GeoJson(
