@@ -3,16 +3,19 @@ color-scheme: light
 
 title: somerville-schools-traffic-safety
 description: Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis
+url: https://https://yvesmango.github.io/
+baseurl: /somerville-schools-traffic-safety
 
 plugins:
+  - jekyll-remote-theme
   - jekyll-sitemap
   - jekyll-seo-tag
   - jemoji
 
 navigation:
-  - name: Read me
-    link: ./index.html
+  - name: Read Me
+    link: /somerville-schools-traffic-safety/
   - name: Jupyter notebook
-    link: ./02_analysis_viz_duplicate
+    link: /somerville-schools-traffic-safety/02_analysis_viz_duplicate.html
   - name: Executive Summary
-    link: ./03_exec_summary
+    link: /somerville-schools-traffic-safety/03_exec_summary.html

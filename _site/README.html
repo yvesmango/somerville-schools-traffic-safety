@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.9.1 -->
+<title>Somerville Schools Traffic Safety | somerville-schools-traffic-safety</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Somerville Schools Traffic Safety" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis" />
+<meta name="twitter:description" property="og:description" content="Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis" />
+<link rel="canonical" href="http://localhost:4000/somerville-schools-traffic-safety/README.html" />
+<meta property="og:url" content="http://localhost:4000/somerville-schools-traffic-safety/README.html" />
+<meta property="og:site_name" content="somerville-schools-traffic-safety" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Somerville Schools Traffic Safety" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis","headline":"Somerville Schools Traffic Safety","url":"http://localhost:4000/somerville-schools-traffic-safety/README.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/somerville-schools-traffic-safety/assets/css/colors-light.css?v=">
+    <link rel="stylesheet" href="/somerville-schools-traffic-safety/assets/css/style.css?v=">
+    <link rel="preload" href="" as="image">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="sidebar">
+        <header>
+    
+
+
+<h1>somerville-schools-traffic-safety</h1>
+
+
+
+
+
+
+<p>Ranking Somerville public schools by safety priority using 3 years of crash data and traffic volume analysis</p>
+
+
+    
+
+    
+
+
+<div class="link-wrapper">
+  
+
+  
+  <h3 class="sidebar-h3">Contents:</h3>
+  <ul class="content">
+    <li><a href="/somerville-schools-traffic-safety/">Read Me</a>
+        
+    </li>
+    <li><a href="/somerville-schools-traffic-safety/02_analysis_viz_duplicate.html">Jupyter notebook</a>
+        
+    </li>
+    <li><a href="/somerville-schools-traffic-safety/03_exec_summary.html">Executive Summary</a>
+        
+    </li>
+  </ul>
+  
+</div>
+
+</header>
+        <div class="link-wrapper-mobile">
+    
+
+    
+    <h3 class="sidebar-h3">Contents:</h3>
+    <ul class="content">
+      <li><a href="/somerville-schools-traffic-safety/">Read Me</a>
+          
+      </li>
+      <li><a href="/somerville-schools-traffic-safety/02_analysis_viz_duplicate.html">Jupyter notebook</a>
+          
+      </li>
+      <li><a href="/somerville-schools-traffic-safety/03_exec_summary.html">Executive Summary</a>
+          
+      </li>
+    </ul>
+    
+</div>
+
+        <div class="sidebar-footer">
+    
+
+<p style="margin-bottom: 0px">
+    <small>
+        <a href="https://github.com/vaibhavvikas/jekyll-theme-minimalistic">Minimalistic</a> &mdash; Theme by 
+        <a href="https://github.com/vaibhavvikas/">vaibhavvikas</a>
+    </small>
+</p>
+</div>
+      </div>
+      <section>
+      <p><strong><a href="https://yvesmango.github.io/">Home</a> » <a href="https://yvesmango.github.io/projects">Projects</a> »  Somerville Schools Traffic Safety</strong></p>
+
+<h1 id="somerville-schools-traffic-analysis">Somerville Schools Traffic Analysis</h1>
+
+<p><img src="https://github.com/user-attachments/assets/42a0a42b-7361-4dc8-be9b-063981046bf9" alt="ipyleaflet-traffic-buffers" /></p>
+
+<p><strong>Goal</strong>: To identify and prioritize Somerville public schools for safety interventions by analyzing crash data and traffic volumes.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This project combines spatial analysis and data visualization to assess school zone safety. By integrating three years of crash records with traffic volume data, we developed a data-driven priority ranking for eight Somerville schools.</p>
+
+<h2 id="data-sources">Data Sources</h2>
+
+<ul>
+  <li><strong>Crash Data (2023-2025)</strong> : Obtained from the MassDOT IMPACT portal, filtered to Somerville.</li>
+  <li><strong>Traffic Volume Data (2024)</strong> : Accessed via the MassDOT Road Inventory API (line segments with AADT).</li>
+  <li><strong>School Locations</strong>: Geocoded addresses for eight selected Somerville public schools.</li>
+</ul>
+
+<h2 id="methodology">Methodology</h2>
+
+<ol>
+  <li><strong>Data Collection</strong>: Downloaded crash data, pulled traffic data via API, and geocoded school addresses.</li>
+  <li><strong>Spatial Analysis</strong>: Created 0.25-mile school buffers and performed spatial joins to count crashes and sum traffic exposure per school.</li>
+  <li><strong>Priority Ranking</strong>: Developed a composite priority score weighting crash counts and total traffic volume (AADT) to rank schools.</li>
+  <li><strong>Visualization</strong>: Created static maps with Matplotlib and an interactive map with Leafmap.</li>
+</ol>
+
+<h2 id="outputs">Outputs</h2>
+
+<ul>
+  <li><a href="./outputs/somerville_school_priority_final.png">Final Priority Map</a></li>
+  <li><a href="./outputs/crashes_vs_avg_aadt.png">Crash vs. Traffic Combo Chart</a></li>
+  <li><a href="">Interactive Priority Map</a></li>
+  <li><a href="./03_exec_summary.md">Executive Summary</a></li>
+</ul>
+
+<h2 id="technologies-used">Technologies Used</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Python</code>, <code class="language-plaintext highlighter-rouge">GeoPandas</code>, <code class="language-plaintext highlighter-rouge">Matplotlib</code>, <code class="language-plaintext highlighter-rouge">Leafmap</code>, <code class="language-plaintext highlighter-rouge">REST APIs</code></p>
+
+<h2 id="license">License</h2>
+
+<p>MIT License</p>
+
+      </section>
+      <footer>
+    
+
+<p style="margin-bottom: 0px">
+    <small>
+        <a href="https://github.com/vaibhavvikas/jekyll-theme-minimalistic">Minimalistic</a> &mdash; Theme by 
+        <a href="https://github.com/vaibhavvikas/">vaibhavvikas</a>
+    </small>
+</p>
+</footer>
+    </div>
+    <script src="/somerville-schools-traffic-safety/assets/js/scale.fix.js"></script>
+  </body>
+</html>

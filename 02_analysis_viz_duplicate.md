@@ -1,3 +1,8 @@
+---
+layout: default
+title: Analysis and Visualizations
+---
+
 ## Somerville Schools Traffic Analysis
 ### Phase 3-4: Analysis & Visualization
 

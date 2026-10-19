@@ -1,3 +1,8 @@
+---
+layout: default
+title: Executive Summary
+---
+
 # Somerville Schools Traffic Analysis
 ## Executive Summary
 
