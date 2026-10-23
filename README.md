@@ -1,8 +1,3 @@
----
-layout: default
-title: Somerville Schools Traffic Safety
----
-
 **[Home](https://yvesmango.github.io/) >> [Projects](https://yvesmango.github.io/projects) >>  Somerville Schools Traffic Safety**
 
 # Somerville Schools Traffic Analysis
